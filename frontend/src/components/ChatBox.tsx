@@ -18,6 +18,28 @@ export default function ChatBox({ agent }: Props) {
   });
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (file.type === "text/csv" || file.type.includes("text") || file.name.endsWith(".csv")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const content = event.target?.result as string;
+        // On remplit l'input avec le contenu du fichier pour l'envoyer à l'IA
+        handleInputChange({ target: { value: `[Fichier: ${file.name}]\n\nVoici le contenu du fichier pour analyse :\n${content}` } } as any);
+      };
+      reader.readAsText(file);
+    } else {
+      alert("Format de fichier non supporté. Veuillez envoyer un CSV ou un fichier texte.");
+    }
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -77,12 +99,23 @@ export default function ChatBox({ agent }: Props) {
       <div className="p-8 pt-0">
         <form onSubmit={handleSubmit} className="relative group">
           <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            accept=".csv,.txt"
+          />
+          <input
             value={input}
             onChange={handleInputChange}
             placeholder={`Message à ${agent.name}...`}
             className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-14 text-sm focus:outline-none focus:border-gold/50 transition-all placeholder:text-gray-600"
           />
-          <button type="button" className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gold transition-colors">
+          <button 
+            type="button" 
+            onClick={handleFileClick}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gold transition-colors"
+          >
             <Paperclip size={20} />
           </button>
           <button 
