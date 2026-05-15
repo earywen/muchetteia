@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from "ai/react";
+import ReactMarkdown from "react-markdown";
 import { Agent } from "@/lib/agents";
 import { useRef, useEffect } from "react";
 import { Paperclip, Send } from "lucide-react";
@@ -40,12 +41,26 @@ export default function ChatBox({ agent }: Props) {
         {messages.map((m) => (
           <div key={m.id} className={clsx("flex", m.role === "user" ? "justify-end" : "justify-start")}>
             <div className={clsx(
-              "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed",
+              "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap",
               m.role === "user" 
                 ? "bg-gold text-background font-medium rounded-br-none" 
                 : "bg-white/5 border border-white/10 text-gray-200 rounded-bl-none"
             )}>
-              {m.content}
+              {m.role === "user" ? (
+                m.content
+              ) : (
+                <ReactMarkdown 
+                  components={{
+                    p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
+                    ul: ({children}) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
+                    ol: ({children}) => <ol className="list-decimal ml-4 mb-2">{children}</ol>,
+                    li: ({children}) => <li className="mb-1">{children}</li>,
+                    strong: ({children}) => <strong className="text-gold font-bold">{children}</strong>
+                  }}
+                >
+                  {m.content}
+                </ReactMarkdown>
+              )}
             </div>
           </div>
         ))}
