@@ -3,8 +3,8 @@
 import { useChat } from "ai/react";
 import ReactMarkdown from "react-markdown";
 import { Agent } from "@/lib/agents";
-import { useRef, useEffect } from "react";
-import { Paperclip, Send } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
+import { Paperclip, Send, X } from "lucide-react";
 import { clsx } from "clsx";
 
 interface Props {
@@ -19,6 +19,7 @@ export default function ChatBox({ agent }: Props) {
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingFile, setPendingFile] = useState<{ name: string; content: string } | null>(null);
 
   const handleFileClick = () => {
     fileInputRef.current?.click();
@@ -32,12 +33,31 @@ export default function ChatBox({ agent }: Props) {
       const reader = new FileReader();
       reader.onload = (event) => {
         const content = event.target?.result as string;
-        // On remplit l'input avec le contenu du fichier pour l'envoyer à l'IA
-        handleInputChange({ target: { value: `[Fichier: ${file.name}]\n\nVoici le contenu du fichier pour analyse :\n${content}` } } as any);
+        setPendingFile({ name: file.name, content });
       };
       reader.readAsText(file);
     } else {
       alert("Format de fichier non supporté. Veuillez envoyer un CSV ou un fichier texte.");
+    }
+  };
+
+  const onLocalSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (pendingFile) {
+      // On combine le message texte + le contenu du fichier de façon invisible
+      const combinedMessage = `[Fichier: ${pendingFile.name}]\n\n${input}\n\nContenu du fichier pour analyse :\n${pendingFile.content}`;
+      
+      // On utilise append pour envoyer manuellement
+      append({
+        role: 'user',
+        content: combinedMessage,
+      });
+      
+      // On nettoie tout
+      setInput('');
+      setPendingFile(null);
+    } else {
+      handleSubmit(e);
     }
   };
 
@@ -97,7 +117,20 @@ export default function ChatBox({ agent }: Props) {
 
       {/* Input Area */}
       <div className="p-8 pt-0">
-        <form onSubmit={handleSubmit} className="relative group">
+        {pendingFile && (
+          <div className="mb-2 flex items-center gap-2 p-2 px-3 bg-gold/10 border border-gold/30 rounded-xl w-fit animate-in fade-in slide-in-from-bottom-2">
+            <Paperclip size={14} className="text-gold" />
+            <span className="text-xs font-medium text-gold truncate max-w-[200px]">{pendingFile.name}</span>
+            <button 
+              type="button" 
+              onClick={() => setPendingFile(null)}
+              className="ml-2 p-1 hover:bg-gold/20 rounded-full text-gold transition-colors"
+            >
+              <X size={12} />
+            </button>
+          </div>
+        )}
+        <form onSubmit={onLocalSubmit} className="relative group">
           <input
             type="file"
             ref={fileInputRef}
@@ -108,7 +141,7 @@ export default function ChatBox({ agent }: Props) {
           <input
             value={input}
             onChange={handleInputChange}
-            placeholder={`Message à ${agent.name}...`}
+            placeholder={pendingFile ? "Ajoutez une question sur ce fichier..." : `Message à ${agent.name}...`}
             className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-14 text-sm focus:outline-none focus:border-gold/50 transition-all placeholder:text-gray-600"
           />
           <button 
@@ -120,7 +153,7 @@ export default function ChatBox({ agent }: Props) {
           </button>
           <button 
             type="submit" 
-            disabled={!input.trim()}
+            disabled={!input.trim() && !pendingFile}
             className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-gold rounded-xl text-background hover:scale-105 active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all shadow-[0_0_15px_rgba(251,191,36,0.3)]"
           >
             <Send size={18} />
