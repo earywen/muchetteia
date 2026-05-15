@@ -1,5 +1,4 @@
 import { OpenAIStream, StreamingTextResponse } from "ai";
-import OpenAI from "openai";
 
 // Nous utilisons l'OpenAI SDK comme client générique ou nous appelons directement le Nexus Local
 export const runtime = "edge";
