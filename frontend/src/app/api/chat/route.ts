@@ -10,17 +10,15 @@ export async function POST(req: Request) {
     const NEXUS_API_URL = process.env.NEXUS_API_URL;
     const API_KEY = process.env.LAMUCHETTE_API_KEY;
 
-    console.log(`[Nexus] Calling ${agentId} at ${NEXUS_API_URL}`);
-
     if (!NEXUS_API_URL) {
-      throw new Error("NEXUS_API_URL is not defined in environment variables");
+      throw new Error("NEXUS_API_URL is not defined");
     }
 
     const response = await fetch(`${NEXUS_API_URL}/${agentId}/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": API_KEY || "",
+        "x-api-key": API_KEY || "", // Envoi en minuscules par précaution
       },
       body: JSON.stringify({ message: lastMessage }),
     });
@@ -28,19 +26,20 @@ export async function POST(req: Request) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`[Nexus Error] ${response.status}: ${errorText}`);
-      throw new Error(`Nexus Local a répondu avec une erreur ${response.status}`);
+      throw new Error(`Nexus Local Error ${response.status}`);
     }
 
     const data = await response.json();
     const text = data.reply || data.message || "Aucune réponse reçue du Nexus.";
 
-    // Stream artificiel pour le Vercel AI SDK
+    // Utilisation d'un encodeur pour envoyer des "bytes" au stream
+    const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
         const words = text.split(" ");
         for (const word of words) {
-          controller.enqueue(word + " ");
-          await new Promise((resolve) => setTimeout(resolve, 20));
+          controller.enqueue(encoder.encode(word + " "));
+          await new Promise((resolve) => setTimeout(resolve, 30));
         }
         controller.close();
       },
