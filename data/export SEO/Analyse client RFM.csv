@@ -1,0 +1,11 @@
+"RFM group","Percent of customers","New customer records","Days since last order","Total number of orders","Total amount spent"
+"dormant",0.3074,312,605,312,10892.3077
+"active",0.2079,211,125,215,7541.4376
+"loyal",0.1182,120,191,231,18376.2994
+"champions",0.1153,117,56,310,21675.9391
+"needs_attention",0.0956,97,239,97,6343.9296
+"at_risk",0.0778,79,541,99,7135.7598
+"almost_lost",0.0611,62,274,62,1823.0892
+"previously_loyal",0.0148,15,479,38,2815.6999
+"new",0.001,1,103,1,15
+"promising",0.001,1,157,1,19.9

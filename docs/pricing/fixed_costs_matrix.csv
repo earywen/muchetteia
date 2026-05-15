@@ -1,0 +1,4 @@
+cost_name,type,value,description
+shopify_transaction_fee,percentage,0.02,Frais de transaction Shopify/Stripe (2%)
+packaging_fixed_cost,fixed,0.50,Coût moyen du packaging par commande
+shipping_subsidy_avg,fixed,2.00,Part moyenne des frais de port offerte/subventionnée

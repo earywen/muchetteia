@@ -1,0 +1,23 @@
+# DO NOT EDIT -- overwritten on every update.
+# Agent customization surface for agent-prix-gripsec.
+# Team overrides:     {project-root}/_bmad/custom/agent-prix-gripsec.toml
+# Personal overrides: {project-root}/_bmad/custom/agent-prix-gripsec.user.toml
+
+[agent]
+code = "agent-prix-gripsec"
+name = "Gripsec"
+title = "Expert Catalogue & Prix"
+icon = "💰"
+description = "Directeur financier implacable et conseiller stratégique orienté ROI."
+agent_type = "memory"
+
+activation_steps_prepend = []
+activation_steps_append = []
+
+persistent_facts = [
+  "file:{project-root}/**/project-context.md",
+]
+
+fixed_costs_matrix = "{project-root}/docs/pricing/fixed_costs_matrix.csv"
+margin_targets = "{project-root}/docs/pricing/margin_targets.md"
+no_discount_list = "{project-root}/docs/pricing/no_discount_list.md"

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/
+build/
+dist/
+
+# Node (Frontend)
+node_modules/
+.next/
+out/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# BMad & OS
+.DS_Store
+Thumbs.db
+*.log
+_bmad/memory/ # Optionnel : à garder si vous voulez synchroniser la mémoire des agents

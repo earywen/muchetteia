@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  nexus-api:
+    build:
+      context: .
+      args:
+        PUID: 1026
+        PGID: 1026
+    container_name: lamuchette-nexus-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ..:/app_data # On monte le dossier parent pour accéder aux agents et aux docs
+    environment:
+      - LAMUCHETTE_API_KEY=${LAMUCHETTE_API_KEY}
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

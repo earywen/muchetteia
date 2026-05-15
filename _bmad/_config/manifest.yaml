@@ -1,0 +1,57 @@
+installation:
+  version: 6.6.0
+  installDate: 2026-05-15T15:52:47.347Z
+  lastUpdated: 2026-05-15T15:52:47.347Z
+modules:
+  - name: core
+    version: 6.6.0
+    installDate: 2026-05-15T15:52:45.745Z
+    lastUpdated: 2026-05-15T15:52:47.259Z
+    source: built-in
+    npmPackage: null
+    repoUrl: null
+  - name: bmm
+    version: 6.6.0
+    installDate: 2026-05-15T15:52:45.711Z
+    lastUpdated: 2026-05-15T15:52:47.260Z
+    source: built-in
+    npmPackage: null
+    repoUrl: null
+  - name: bmb
+    version: v1.8.0
+    installDate: 2026-05-15T15:52:45.896Z
+    lastUpdated: 2026-05-15T15:52:47.283Z
+    source: external
+    npmPackage: bmad-builder
+    repoUrl: https://github.com/bmad-code-org/bmad-builder
+    channel: stable
+    sha: d64469f61fadc6cfbf2dea6a0a257fe6eb2790a2
+  - name: cis
+    version: v0.2.0
+    installDate: 2026-05-15T15:52:45.948Z
+    lastUpdated: 2026-05-15T15:52:47.303Z
+    source: external
+    npmPackage: bmad-creative-intelligence-suite
+    repoUrl: https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite
+    channel: stable
+    sha: 14a63b893c07173b7a6cfe0fb6a9a72ba51d3cf1
+  - name: tea
+    version: v1.17.1
+    installDate: 2026-05-15T15:52:46.790Z
+    lastUpdated: 2026-05-15T15:52:47.327Z
+    source: external
+    npmPackage: bmad-method-test-architecture-enterprise
+    repoUrl: https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise
+    channel: stable
+    sha: fcee9e3dc9517fd44a6d0620f3a09d2ad25966c9
+  - name: baut
+    version: v1.14.2
+    installDate: 2026-05-15T15:52:46.931Z
+    lastUpdated: 2026-05-15T15:52:47.347Z
+    source: external
+    npmPackage: bmad-story-automator
+    repoUrl: https://github.com/bmad-code-org/bmad-automator
+    channel: stable
+    sha: 593f338532ea730b5c1a2dd86681e87b5b4f04dd
+ides:
+  - antigravity
