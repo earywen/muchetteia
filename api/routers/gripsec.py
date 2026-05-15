@@ -12,8 +12,8 @@ router = APIRouter(prefix="/gripsec", tags=["Gripsec"])
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
-    # Utilisation du modèle 1.5 Flash (plus moderne et stable)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # Utilisation du modèle Gemini 3 Flash Preview (le plus récent !)
+    model = genai.GenerativeModel('gemini-3-flash-preview')
 else:
     model = None
 
