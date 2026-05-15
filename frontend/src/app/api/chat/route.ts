@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": API_KEY || "", // Envoi en minuscules par précaution
+        "x-api-key": API_KEY || "",
       },
       body: JSON.stringify({ message: lastMessage }),
     });
@@ -32,13 +32,15 @@ export async function POST(req: Request) {
     const data = await response.json();
     const text = data.reply || data.message || "Aucune réponse reçue du Nexus.";
 
-    // Utilisation d'un encodeur pour envoyer des "bytes" au stream
+    // Formatage au protocole Vercel AI SDK (0:"texte"\n)
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
+        // Le format attendu par useChat est 0: "le mot" \n
         const words = text.split(" ");
         for (const word of words) {
-          controller.enqueue(encoder.encode(word + " "));
+          const chunk = `0:${JSON.stringify(word + " ")}\n`;
+          controller.enqueue(encoder.encode(chunk));
           await new Promise((resolve) => setTimeout(resolve, 30));
         }
         controller.close();
