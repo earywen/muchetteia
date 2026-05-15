@@ -4,6 +4,7 @@ import { useChat } from "ai/react";
 import { Agent } from "@/lib/agents";
 import { useRef, useEffect } from "react";
 import { Paperclip, Send } from "lucide-react";
+import { clsx } from "clsx";
 
 interface Props {
   agent: Agent;
