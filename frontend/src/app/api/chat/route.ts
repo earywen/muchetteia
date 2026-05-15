@@ -1,19 +1,21 @@
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { StreamingTextResponse } from "ai";
 
-// Nous utilisons l'OpenAI SDK comme client générique ou nous appelons directement le Nexus Local
 export const runtime = "edge";
 
 export async function POST(req: Request) {
-  const { messages, agentId } = await req.json();
-  const lastMessage = messages[messages.length - 1].content;
-
-  // URL de votre Beelink (configurée dans les variables d'env Vercel)
-  const NEXUS_API_URL = process.env.NEXUS_API_URL || "http://[VOTRE-IP]:8000";
-  const API_KEY = process.env.LAMUCHETTE_API_KEY;
-
   try {
-    // 1. On envoie la requête au Nexus Local (FastAPI)
-    // Pour cet exemple, on simule l'appel à Sirius ou Gripsec
+    const { messages, agentId } = await req.json();
+    const lastMessage = messages[messages.length - 1].content;
+
+    const NEXUS_API_URL = process.env.NEXUS_API_URL;
+    const API_KEY = process.env.LAMUCHETTE_API_KEY;
+
+    console.log(`[Nexus] Calling ${agentId} at ${NEXUS_API_URL}`);
+
+    if (!NEXUS_API_URL) {
+      throw new Error("NEXUS_API_URL is not defined in environment variables");
+    }
+
     const response = await fetch(`${NEXUS_API_URL}/${agentId}/chat`, {
       method: "POST",
       headers: {
@@ -24,30 +26,30 @@ export async function POST(req: Request) {
     });
 
     if (!response.ok) {
-        throw new Error("Erreur lors de la communication avec le Nexus Local");
+      const errorText = await response.text();
+      console.error(`[Nexus Error] ${response.status}: ${errorText}`);
+      throw new Error(`Nexus Local a répondu avec une erreur ${response.status}`);
     }
 
     const data = await response.json();
-    
-    // 2. On transforme la réponse en Stream (ou on la renvoie telle quelle si pas de streaming local)
-    // Note: Pour une expérience fluide, le Vercel AI SDK attend un stream.
-    // Si votre API locale ne streame pas encore, on crée un stream artificiel à partir du texte.
-    
+    const text = data.reply || data.message || "Aucune réponse reçue du Nexus.";
+
+    // Stream artificiel pour le Vercel AI SDK
     const stream = new ReadableStream({
       async start(controller) {
-        const text = data.reply || data.message || "Je n'ai pas pu obtenir de réponse.";
         const words = text.split(" ");
         for (const word of words) {
           controller.enqueue(word + " ");
-          await new Promise((resolve) => setTimeout(resolve, 30)); // Simulation de streaming
+          await new Promise((resolve) => setTimeout(resolve, 20));
         }
         controller.close();
       },
     });
 
     return new StreamingTextResponse(stream);
-  } catch (error) {
-    return new Response(JSON.stringify({ error: "Nexus hors ligne ou erreur technique" }), {
+  } catch (error: any) {
+    console.error("[Vercel Edge Error]:", error.message);
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
