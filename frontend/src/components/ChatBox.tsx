@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function ChatBox({ agent }: Props) {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading, append, setInput } = useChat({
     api: "/api/chat",
     body: { agentId: agent.id },
   });
