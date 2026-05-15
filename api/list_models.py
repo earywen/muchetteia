@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key = "AIzaSyDQARt8mvfip0pnFyIMg2EXxfWDt24fdRE" # Utilisation directe pour le test
+api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
 print("--- Liste des modèles disponibles ---")
